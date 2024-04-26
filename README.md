@@ -1,11 +1,13 @@
 # Seppuku
 
-Reboot your Linux machine with a simple TCP packet
+TCP Driven violent Linux reboot
 
 ## Description
 
 I've lost some remote raspberry-pi based setups due to bad USB connection between a SSD and the USB bus.
 This thing listens for TCP connection on port `58192` (by default), when sent the right string, it reboots violently the host through a sysrq request.
+
+Because it already resides in memory, is running and listening, there is a good chance that in case of a lost connectivity with storage the host will recover after a hard reboot.   
 
 It is bad, but avoids me a trip to physically reboot the damn thing.
 
@@ -28,4 +30,4 @@ echo "reboot:xGtKdKlPsDns" | nc my.remote.host 55192
 
 ## Security
 
-Absolutely none. Put at least setup some firewall rules to secure this thing a tiny bit. At least everything is logged to stdout/stderr
+Absolutely none. Put at least setup some firewall rules to secure this thing a tiny bit. Also everything sent to it is logged to stdout/stderr
