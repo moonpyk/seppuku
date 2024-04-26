@@ -20,21 +20,25 @@ class Handler(StreamRequestHandler):
                 .strip()
                 .decode('utf8')
                 )
-        logging.info(f"<{self.client_address}> {data}")
+        logging.info(f"@{self.client_address}: {data}")
 
         if data == 'ping':
             self.request.sendall(b"pong")
 
         elif data.startswith(f'reboot:{self.password}'):
             try:
+                # Super dirty reboot
                 with open('/proc/sys/kernel/sysrq', 'w') as sysrq:
                     print('1', file=sysrq)
+                
                 with open('/proc/sysrq-trigger', 'w') as systrigg:
                     print('b', file=systrigg)
+                
+                # This as almost no chances of beeing sent correctly
                 self.request.sendall(b"reboot!")
 
             except Exception as e:
-                logging.error("Une erreur est survenue", exc_info=e)
+                logging.error("An error occured", exc_info=e)
                 self.request.sendall(b"error!")
 
         else:
@@ -43,7 +47,7 @@ class Handler(StreamRequestHandler):
         self.rfile.close()
 
 
-def random_password(length=12):
+def random_password(length=24):
     return ''.join(random.choice(
         string.ascii_lowercase + string.ascii_uppercase + string.digits
     ) for _ in range(length))
@@ -51,13 +55,13 @@ def random_password(length=12):
 
 def main():
     logging.basicConfig(level=logging.INFO)
-    host = os.getenv('SEPPUKU_HOST', '0.0.0.0')
+    host = os.getenv('SEPPUKU_LISTEN', '0.0.0.0')
     port = int(os.getenv('SEPPUKU_PORT', '55192'))
     password = os.getenv('SEPPUKU_PASSWORD', None)
 
     if password is None or len(password) == 0:
         password = random_password()
-        logging.info("Mot de passe généré \'%s\'", password)
+        logging.info("Random password generated \"%s\"", password)
 
     server = TCPServer(
         (host, port),
