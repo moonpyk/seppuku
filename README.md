@@ -11,6 +11,7 @@ Because it already resides in memory, is running and listening, there is a good 
 
 It is bad, but avoids me a trip to physically reboot the damn thing.
 
+On a more serious note, raspberry-pis are quite vulnerable to interferences : https://github.com/geerlingguy/raspberry-pi-pcie-devices/issues/559
 
 ## Environment variables
 
