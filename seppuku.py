@@ -25,21 +25,31 @@ class Handler(StreamRequestHandler):
         if data == 'ping':
             self.request.sendall(b"pong")
 
-        elif data.startswith(f'reboot:{self.password}'):
+        elif data == f'reboot:{self.password}':
             try:
                 # Super dirty reboot
                 with open('/proc/sys/kernel/sysrq', 'w') as sysrq:
                     print('1', file=sysrq)
-                
+
                 with open('/proc/sysrq-trigger', 'w') as systrigg:
                     print('b', file=systrigg)
-                
+
                 # This as almost no chances of beeing sent correctly
                 self.request.sendall(b"reboot!")
 
             except Exception as e:
-                logging.error("An error occured", exc_info=e)
+                logging.error("An error occurred", exc_info=e)
                 self.request.sendall(b"error!")
+
+        elif data == f'nicereboot:{self.password}':
+            try:
+                if os.spawnl(os.P_WAIT, '/usr/sbin/reboot', 'reboot') == 0:
+                    self.request.sendall(b"nice reboot!")
+                else:
+                    logging.error('An error occurred, exit != 0')
+            except Exception as e:
+                logging.error('An error occurred', exc_info=e)
+                self.request.sendall(b'error!')
 
         else:
             self.request.sendall(b"???")
@@ -69,8 +79,14 @@ def main():
     )
 
     try:
+        logging.info(
+            "Listening on %s:%s",
+            server.server_address[0],
+            server.server_address[1]
+        )
         server.serve_forever()
     except (KeyError, KeyboardInterrupt):
+        logging.info("Exiting...")
         server.shutdown()
 
 
