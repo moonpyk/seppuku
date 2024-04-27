@@ -36,7 +36,7 @@ class Handler(StreamRequestHandler):
         logger.info(f"@{self.client_address}: {data}")
 
         if data == 'ping':
-            self.request.sendall(b"pong")
+            self.request.sendall(b"pong\n")
 
         elif data == f'reboot:{self.password}':
             try:
@@ -48,25 +48,25 @@ class Handler(StreamRequestHandler):
                     print('b', file=systrigg)
 
                 # This as almost no chances of being sent correctly
-                self.request.sendall(b"reboot!")
+                self.request.sendall(b"reboot!\n")
 
             except Exception as e:
                 logger.error("An error occurred", exc_info=e)
-                self.request.sendall(b"error!")
+                self.request.sendall(b"error!\n")
 
         elif data == f'nicereboot:{self.password}':
             try:
                 if os.spawnl(os.P_WAIT, '/usr/sbin/reboot', 'reboot') == 0:
-                    self.request.sendall(b"nice reboot!")
+                    self.request.sendall(b"nice reboot!\n")
                 else:
                     logger.error('An error occurred, exit != 0')
 
             except Exception as e:
                 logger.error('An error occurred', exc_info=e)
-                self.request.sendall(b'error!')
+                self.request.sendall(b'error!\n')
 
         else:
-            self.request.sendall(b"???")
+            self.request.sendall(b"???\n")
 
         self.rfile.close()
 
