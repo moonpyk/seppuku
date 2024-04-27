@@ -47,7 +47,7 @@ class Handler(StreamRequestHandler):
                 with open('/proc/sysrq-trigger', 'w') as systrigg:
                     print('b', file=systrigg)
 
-                # This as almost no chances of beeing sent correctly
+                # This as almost no chances of being sent correctly
                 self.request.sendall(b"reboot!")
 
             except Exception as e:
