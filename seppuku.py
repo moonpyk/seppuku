@@ -99,7 +99,7 @@ def run():
             server.server_address[1]
         )
         server.serve_forever()
-    except (KeyError, KeyboardInterrupt):
+    except KeyboardInterrupt:
         logger.info("Exiting...")
         server.shutdown()
 
