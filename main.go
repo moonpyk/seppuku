@@ -198,7 +198,7 @@ func main() {
 		return
 
 	case "--help", "-h":
-		fmt.Printf("%s [--help|--version|run|genconfig]", os.Args[0])
+		fmt.Printf("%s [--help|run|genconfig]", os.Args[0])
 		fmt.Println()
 		fmt.Printf("Version %s [%s]", Version, Commit)
 		fmt.Println()
