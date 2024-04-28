@@ -9,6 +9,7 @@ import (
 	"net"
 	"os"
 	"os/exec"
+	"runtime"
 	"strings"
 	"time"
 )
@@ -175,6 +176,12 @@ func init() {
 }
 
 func main() {
+	if runtime.GOOS != "linux" {
+		distillog.Errorf("%s is only supported on Linux", os.Args[0])
+		os.Exit(2)
+		return
+	}
+
 	command := "run"
 
 	if len(os.Args) > 1 {
@@ -184,14 +191,17 @@ func main() {
 	switch command {
 	case "run":
 		os.Exit(run())
+		return
 
 	case "genconfig":
 		os.Exit(genconfig())
+		return
 
 	case "--help", "-h":
 		fmt.Printf("%s [run|genconfig]", os.Args[0])
 		fmt.Println()
 		os.Exit(0)
+		return
 	}
 
 	os.Exit(1)
