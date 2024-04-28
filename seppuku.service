@@ -1,5 +1,5 @@
 [Unit]
-Description=Service Seppuku
+Description=Seppuku reboot service
 Wants=network-online.target
 After=network-online.target
 
@@ -7,11 +7,10 @@ After=network-online.target
 User=root
 Group=root
 Type=simple
-ExecStart=/path/to/seppuku.py
+ExecStart=/path/to/seppuku
 EnvironmentFile=-/etc/default/seppuku
 StandardError=journal
 StandardOutput=journal
-
 
 [Install]
 WantedBy=multi-user.target
