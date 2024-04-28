@@ -1,15 +1,19 @@
 BIN = $(CURDIR)/bin
 CROSS_ARCHS = arm64 arm amd64
 
-build-cross:
+generate:
+	go generate
+
+build-cross: build
 	$(foreach ARCH, $(CROSS_ARCHS), $(shell export GOOS=linux; export GOARCH=$(ARCH); go build -v -o bin/seppuku-$(ARCH)))
 
-build:
+build: clean generate
 	go build -o $(BIN)/seppuku
 
 clean:
 	go clean
-	rm -rf $(BIN)
+	test -f "$(CURDIR)/.commit.txt" && rm "$(CURDIR)/.commit.txt" ; true
+	test -d "$(BIN)" && rm -rf "$(BIN)" ; true
 
 run:
 	go run main.go
